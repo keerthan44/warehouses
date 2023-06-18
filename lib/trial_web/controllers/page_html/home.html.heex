@@ -1,0 +1,280 @@
+<.flash_group flash={@flash} />
+<div class="relative shadow-md sm:rounded-lg flex-1">
+    <header class="px-5 py-4 border-b border-gray-100">
+        <h2 class="font-semibold text-gray-800">Destination Table</h2>
+    </header>
+    <table id="destination_table" class="w-full text-sm text-left text-gray-500 border-separate border-spacing-0">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-100 border">
+            <tr>
+                <th scope="col" class="p-4 w-4">
+                    <div class="flex items-center" onClick="checkAll(this)">
+                        <input id="destination_tcheckbox_all" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-0 ">
+                    </div>
+                </th>
+                <th scope="col" class="flex-[8_8_0%] justify-center px-6 border w-60">
+                  Warehouse ID
+                </th>
+                <th scope="col" class="flex-[8_8_0%] justify-center px-6 border w-60">
+                    Warehouse Name
+                </th>
+
+                <th scope="col" class="flex-1 border w-20">
+                    <svg  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" height="1.5rem" stroke="black" class="block mx-auto">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+
+                </th>
+            </tr>
+        </thead>
+        <tbody id="destination_tbody">
+        <%= for warehouse <- @warehouse_id_name do %>
+            <tr id="r1" class="bg-white border">
+                <td class="w-4 p-4 border">
+                    <div class="flex items-center" onClick="uncheckTable(this)">
+                        <input name="destination_tcheckboxes" id="checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-0">
+                    </div>
+                    <div hidden>
+                    <%= elem(warehouse, 2) %>
+                    </div>
+                </td>
+                <th scope='row' class="focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm border">
+                    <div class="flex flex-row items-center">
+                        <div class="flex-[8_8_0%]">
+                            <select id={#{elem(warehouse, 3)}} onchange="return selectChange(this);" disabled="true" class="appearance-none disabled:text-gray-900 w-full font-normal leading-loose border-none text-gray-900 text-sm focus:ring-0 focus:outline-none block overflow-hidden bg-none">
+                                <option selected hidden ><%= elem(warehouse, 0) %></option>
+                            </select>
+                        </div>
+                    </div>
+                </th>
+                <td class=" border focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm">
+                    <input disabled  type="text" id="name" class="bg-white border-none text-gray-900 text-sm  focus:ring-0 block w-full disabled:text-gray-500" placeholder="Warehouse Name" value={elem(warehouse, 1)}>
+                </td>
+                <td class="border focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm">
+                    <div onClick="pencilClick(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="block mx-auto hover:drop-shadow-lg hover:border-white hover:border-b-2" height="1.5em" viewBox="0 0 24 24"><path d="M18.308 0l-16.87 16.873-1.436 7.127 7.125-1.437 16.872-16.875-5.691-5.688zm-15.751 21.444l.723-3.585 12.239-12.241 2.861 2.862-12.239 12.241-3.584.723zm17.237-14.378l-2.861-2.862 1.377-1.377 2.861 2.861-1.377 1.378z"/></svg>
+                    </div>
+                    <div hidden>
+                        <div class="flex flex-row">
+                            <svg onClick="greenTick(this)" xmlns="http://www.w3.org/2000/svg" class="block mr-1.5 ml-auto hover:drop-shadow-lg hover:border-white hover:border-b-2" stroke-width="2" fill="green" height="1.4em" viewBox="0 0 512 512"><path d="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                            <svg onClick="redCross(this)" xmlns="http://www.w3.org/2000/svg" class="block ml-1.5 mr-auto hover:drop-shadow-lg hover:border-white hover:border-b-2" fill="red" height="1.4em" viewBox="0 0 384 512"> <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                        </div>
+                        <div hidden>
+                            <%= elem(warehouse, 3) %>
+                        </div>
+                    </div>
+                </td>
+
+            </tr>
+<% end %>
+        </tbody>
+    </table>
+
+</div>
+<div class="pt-4">
+    <button onClick="addRow()" type="button" class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-green-600 focus:z-10 focus:ring-4 focus:ring-gray-200 ">Add Row</button>
+    <button onClick="deleteRows()"type="button" class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-red-600 focus:z-10 focus:ring-4 focus:ring-gray-200 ">Delete Row</button>
+</div>
+
+<script type="text/javascript">
+    function uncheckTable(checkbox){
+        if(!checkbox.checked){
+            document.getElementById("destination_tcheckbox_all").checked = false;
+        }
+    }
+
+    function checkAll(checkbox_all){
+        console.log(checkbox_all);
+        let checkboxes = document.getElementsByName("destination_tcheckboxes");
+        for(let checkbox = 0; checkbox < checkboxes.length; checkbox++){
+            checkboxes[checkbox].checked = checkbox_all.firstElementChild.checked;
+        }
+
+
+    }
+
+    function selectChange(selectTag) {
+        selectTag.parentElement.parentElement.parentElement.nextElementSibling.firstElementChild.value = selectTag.value;
+        selectTag.parentNode.parentNode.parentNode.parentNode.lastElementChild.lastElementChild.lastElementChild.innerHTML = selectTag[selectTag.selectedIndex].id;
+    }
+
+    function addRow() {
+        fetch("/api/warehouse_id_not_used",
+        {
+            method: "GET",
+            headers: {
+                "content-type": "application/json",
+            }
+        })
+        .then(function(res){
+            if(res.status == 200) {
+                return res.json();
+            } else {
+                console.log("Error")
+            }
+        }).then(function(data){
+            console.log(data)
+            data = data.data;
+            let options = ''
+            for (let i = 0; i < data.length; i++) {
+                options += '<option id="' + data[i][0] + '">' + data[i][1] + '</option>\n'
+            }
+            let destination_tbody = document.getElementById("destination_tbody")
+            table_row = document.createElement("tr");
+            table_row.setAttribute("class", "bg-white border-b");
+            table_row.setAttribute("id", "r" + (destination_tbody.parentElement.rows.length - 1));
+            table_row.innerHTML = `
+                    <td class="w-4 p-4 border">
+                        <div class="flex items-center"  onClick="uncheckTable(this)">
+                            <input name="destination_tcheckboxes" id="checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-0 ">
+                        </div>
+                        <div hidden>
+                        </div>
+                    </td>
+                    <th scope='row' class="focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm border">
+                        <div class="flex flex-row items-center">
+                            <div class="flex-[8_8_0%]">
+                                <select onchange="return selectChange(this);" id="countries" class="appearance-none w-full font-normal leading-loose border-none text-gray-900 text-sm focus:ring-0 focus:outline-none block overflow-hidden bg-none disabled:text-gray-900">
+                                    <option selected hidden>Warehouse ID</option>
+                                    ` + options + `
+                                </select>
+                            </div>
+                        </div>
+                    </th>
+                    <td class=" border focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm">
+                        <input type="text" id="name" class="bg-white border-none text-gray-900 text-sm  focus:ring-0 block w-full disabled:bg-white disabled:text-gray-500" placeholder="Warehouse Name">
+                    </td>
+                    <td class="border focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm">
+                        <div hidden onClick="pencilClick(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="block mx-auto hover:drop-shadow-lg hover:border-white hover:border-b-2" height="1.5em" viewBox="0 0 24 24"><path d="M18.308 0l-16.87 16.873-1.436 7.127 7.125-1.437 16.872-16.875-5.691-5.688zm-15.751 21.444l.723-3.585 12.239-12.241 2.861 2.862-12.239 12.241-3.584.723zm17.237-14.378l-2.861-2.862 1.377-1.377 2.861 2.861-1.377 1.378z"/></svg>
+
+                        </div>
+                        <div>
+                            <div class="flex flex-row">
+                                <svg onClick="greenTick(this)" xmlns="http://www.w3.org/2000/svg" class="block mr-1.5 ml-auto hover:drop-shadow-lg hover:border-white hover:border-b-2" stroke-width="2" fill="green" height="1.4em" viewBox="0 0 512 512"><path d="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+                                <svg onClick="redCross(this)" xmlns="http://www.w3.org/2000/svg" class="block ml-1.5 mr-auto hover:drop-shadow-lg hover:border-white hover:border-b-2" fill="red" height="1.4em" viewBox="0 0 384 512"> <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+                            </div>
+                            <div hidden>
+                            </div>
+                        </div>
+                    </td>
+
+            `;
+
+            destination_tbody.appendChild(table_row);
+            document.getElementById("destination_tcheckbox_all").checked = false;
+            })
+
+    }
+
+    function deleteRows(){
+        let ids = [];
+        let checkedBoxes = [];
+        let id = "";
+        let checkboxes = document.getElementsByName("destination_tcheckboxes");
+        let length = checkboxes.length;
+        for(let checkbox = 0; checkbox < length; checkbox++){
+            if(checkboxes[checkbox].checked){
+                checkedBoxes.push(checkboxes[checkbox])
+                id = checkboxes[checkbox].parentElement.nextElementSibling.innerHTML.trim();
+                if(id !== 'new'){
+                    ids.push(id);
+                };
+            }
+        }
+        document.getElementById("destination_tcheckbox_all").checked = false;
+        fetch("/api/warehouse_id_name/delete",
+        {
+            method: "POST",
+            body: JSON.stringify({"ids": ids}),
+            headers: {
+                "content-type": "application/json",
+            }
+        })
+        .then(function(res){
+            if(res.status == 200) {
+                length = checkedBoxes.length;
+                for(let checkbox = 0; checkbox < length; checkbox++) {
+                    checkedBoxes[checkbox].parentElement.parentElement.parentElement.remove();
+                }
+            } else {
+                console.log("Error")
+            }
+        })
+
+        //checkboxes[0].parentElement.parentElement.parentElement.remove();
+    }
+
+    function pencilClick(pencil){
+        pencil.hidden = true;
+        pencil.nextElementSibling.hidden = false;
+        pencil.parentElement.previousElementSibling.firstElementChild.disabled = false;
+        pencil.nextElementSibling.id = pencil.parentNode.previousElementSibling.firstElementChild.value;
+    }
+
+    function greenTick(greenTick){
+        if(greenTick.parentNode.parentNode.parentNode.parentNode.firstElementChild.lastElementChild.innerHTML.trim()){
+            fetch("/api/warehouse_id_name/" + greenTick.parentNode.parentNode.parentNode.parentNode.firstElementChild.lastElementChild.innerHTML.trim(),
+            {
+                method: "PATCH",
+                body: JSON.stringify(
+                    {
+                        "warehouse_id_name": {
+                            "warehouse_id": greenTick.parentNode.nextElementSibling.innerHTML.trim(),
+                            "warehouse_id_name": greenTick.parentNode.parentNode.parentNode.previousElementSibling.firstElementChild.value
+                    }}),
+                headers: {
+                    "content-type": "application/json",
+                }
+            })
+            .then(function(res){
+                if(res.status == 200) {
+                    console.log("Success")
+                } else {
+                    console.log("Error")
+                }
+            })
+        } else {
+            fetch("/api/warehouse_id_name/",
+            {
+                method: "POST",
+                body: JSON.stringify(
+                    {
+                        "warehouse_id_name": {
+                            "warehouse_id": greenTick.parentNode.nextElementSibling.innerHTML.trim(),
+                            "warehouse_id_name": greenTick.parentNode.parentNode.parentNode.previousElementSibling.firstElementChild.value
+                    }}),
+                headers: {
+                    "content-type": "application/json",
+                }
+            })
+            .then(function(res){
+                if(res.status == 201) {
+                    return res.json();
+                } else {
+                    console.log("Error")
+                }
+            }).then(function(data){
+                id = data.data.id;
+                greenTick.parentNode.parentNode.parentNode.parentNode.firstElementChild.lastElementChild.innerHTML = id
+            })
+
+        }
+        greenTick.parentNode.parentNode.hidden = true;
+        greenTick.parentNode.parentNode.previousElementSibling.hidden = false;
+        greenTick.parentNode.parentNode.parentNode.previousElementSibling.firstElementChild.disabled = true;
+        greenTick.parentNode.parentNode.parentNode.previousElementSibling.previousElementSibling.firstElementChild.firstElementChild.firstElementChild.disabled = true;
+    }
+
+    function redCross(redCross){
+        redCross.parentNode.parentNode.hidden = true;
+        redCross.parentNode.parentNode.previousElementSibling.hidden = false;
+        redCross.parentNode.parentNode.parentNode.previousElementSibling.firstElementChild.value = redCross.parentNode.parentNode.id;
+        redCross.parentNode.parentNode.parentNode.previousElementSibling.firstElementChild.disabled = true;
+        let table_row = redCross.parentNode.parentNode.parentNode.parentNode;
+        if(table_row.firstElementChild.lastElementChild.id == 'new'){
+            table_row.remove();
+        }
+    }
+
+</script>

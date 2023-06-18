@@ -1,0 +1,79 @@
+<div class="relative shadow-md sm:rounded-lg flex-1 w-60 mx-auto">
+    <header class="px-5 py-4 border-b border-gray-100">
+        <h2 class="font-semibold text-gray-800">Alreading Existing Ids</h2>
+    </header>
+    <table id="destination_table" class="w-60 text-sm text-left text-gray-500 dark:text-gray-400 border-separate border-spacing-0">
+        <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400 border">
+        <tr>
+            <th scope="col" class="flex-[8_8_0%] justify-center px-6 border w-60">
+              Warehouse ID
+            </th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <%= for warehouse <- @warehouse_id do %>
+            <tr>
+            <td class=" border focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm">
+              <input disabled  type="text" id="name" class="bg-white border-none text-gray-900 text-sm  focus:ring-0 block w-full disabled:text-gray-500" placeholder="Warehouse ID" value="<%= warehouse.warehouse_id %>">
+            </td>
+            </tr>
+          <%= end %>
+      </tbody>
+    </table>
+</div>
+
+<div class="container flex flex-col justify-start items- mx-3 my-8 py-20">
+
+    <div class="bg-white -mt-24 rounded-lg overflow-hidden">
+        <div class="items-center justify-start py-10 px-5 bg-white rounded-lg mx-auto text-center">
+            <div class="px-2 -mt-6">
+                <div class="text-center">
+                    <div class="w-full text-center">
+                        <form action="#">
+                            <div class="max-w-sm mx-auto p-1 pr-0 flex items-center">
+                                <input placeholder="Warehouse Id"
+                                    class="flex-1 appearance-none rounded shadow p-3 text-grey-dark mr-2 focus:outline-none">
+                                <button onClick="addId(this)" type="button" class="bg-blue-600 text-white text-base font-semibold rounded-md shadow-md hover:bg-indigo-600 p-3">Add Id</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript" >
+  function addId(button){
+
+    fetch("/api/warehouse_id",
+        {
+            method: "POST",
+            body: JSON.stringify({
+              "warehouse_id": {
+                "warehouse_id" :button.previousElementSibling.value
+                }
+              }),
+            headers: {
+                "content-type": "application/json",
+            }
+        })
+        .then(function(res){
+            if(res.status == 201) {
+              let tbody = document.getElementsByTagName("tbody");
+              let table_row = document.createElement("tr");
+              table_row.innerHTML = `
+                  <td class=" border focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm">
+                    <input disabled  type="text" id="name" class="bg-white border-none text-gray-900 text-sm  focus:ring-0 block w-full disabled:text-gray-500" placeholder="Warehouse ID" value="` + button.previousElementSibling.value + `">
+                  </td>`;
+              tbody[0].appendChild(table_row);
+              button.previousElementSibling.value = "";
+
+            } else {
+                console.log("Error")
+            }
+        })
+  }
+
+</script>
