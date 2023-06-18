@@ -197,7 +197,9 @@
                 for(let checkbox = 0; checkbox < length; checkbox++) {
                     checkedBoxes[checkbox].parentElement.parentElement.parentElement.remove();
                 }
+                alert("Success")
             } else {
+                alert("Error")
                 console.log("Error")
             }
         })
@@ -229,8 +231,10 @@
             })
             .then(function(res){
                 if(res.status == 200) {
+                    alert("Success")
                     console.log("Success")
                 } else {
+                    alert("Error")
                     console.log("Error")
                 }
             })
@@ -250,9 +254,11 @@
             })
             .then(function(res){
                 if(res.status == 201) {
+                    alert("Success")
                     return res.json();
                 } else {
                     console.log("Error")
+                    alert("Error")
                 }
             }).then(function(data){
                 id = data.data.id;

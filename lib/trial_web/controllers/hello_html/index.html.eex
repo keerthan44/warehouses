@@ -17,7 +17,7 @@
               <input disabled  type="text" id="name" class="bg-white border-none text-gray-900 text-sm  focus:ring-0 block w-full disabled:text-gray-500" placeholder="Warehouse ID" value="<%= warehouse.warehouse_id %>">
             </td>
             </tr>
-          <%= end %>
+          <% end %>
       </tbody>
     </table>
 </div>
@@ -69,9 +69,10 @@
                   </td>`;
               tbody[0].appendChild(table_row);
               button.previousElementSibling.value = "";
-
+              alert("Success")
             } else {
                 console.log("Error")
+                alert("Error")
             }
         })
   }
