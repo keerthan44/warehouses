@@ -8,8 +8,8 @@ defmodule TrialWeb.PageLive do
   require Logger
 
   def mount(_params, _session, socket) do
-
     # On intial render, it gets all the available warehouse id names with the warehouse_ids joined
+
     warehouse_id_name = Warehouse.list_warehouse_id_name_joined()
     warehouse_id_name = Enum.map(warehouse_id_name, fn warehouse ->  %{"warehouse_id": %{warehouse.warehouse_id => warehouse.primary_key},"new": false, toggle: false} |> Enum.into(warehouse) end)
     Logger.info(IO.inspect(warehouse_id_name))
@@ -18,36 +18,45 @@ defmodule TrialWeb.PageLive do
   end
 
   def handle_event("checkAll", %{"value" => "on"}, socket) do
-    #
+    # checks all textboxes to all
+
     toggle_ids = socket.assigns.warehouse_id_name |> Enum.map(& &1.id)
     {:noreply, assign(socket, :toggle_ids, toggle_ids)}
   end
 
   def handle_event("checkAll", %{}, socket) do
+    # checks all textboxes to off
+
     {:noreply, assign(socket, :toggle_ids, [])}
   end
 
   def handle_event("table_data_checkboxes", %{"toggle-id" => id}, socket) do
-  id = if id != "new", do: String.to_integer(id), else: id
-  toggle_ids = socket.assigns.toggle_ids
+    # used for checking each individual checkbox and keeping track of it
 
-  toggle_ids =
-    if (id in toggle_ids) do
-      Enum.reject(toggle_ids, & &1 == id)
-    else
-      [id|toggle_ids]
-    end
+    id = if id != "new", do: String.to_integer(id), else: id
+    toggle_ids = socket.assigns.toggle_ids
 
-  {:noreply, assign(socket, :toggle_ids, toggle_ids)}
+    toggle_ids =
+      if (id in toggle_ids) do
+        Enum.reject(toggle_ids, & &1 == id)
+      else
+        [id|toggle_ids]
+      end
+
+    {:noreply, assign(socket, :toggle_ids, toggle_ids)}
   end
 
   def handle_event("pencilClick", %{"id" => id}, socket) do
+    # makes the input field for changing warehouse name visible or invisible
+
     id = String.to_integer(id)
     visbility = Enum.reject(socket.assigns.visibility, & &1 == id)
     {:noreply, assign(socket, :visibility, [id | socket.assigns.visibility])}
   end
 
   def handle_event("reset", %{"id" => id}, socket) do
+    # reverts back any changes(if any) made to the warehouse name
+
     if id != "new" do
       id = String.to_integer(id)
       visibility = Enum.reject(socket.assigns.visibility, & &1 == id)
@@ -61,6 +70,8 @@ defmodule TrialWeb.PageLive do
   end
 
   def handle_event("update", %{"warehouse_name" => warehouse_name, "id" => id, "warehouse_id" => warehouse_id}, socket) do
+    # Creates a new warehouse name and applies the necessary changes to the state variables
+
     warehouse_id_name_params = %{ "warehouse_id_name" => warehouse_name, "warehouse_id" => warehouse_id}
     with {:ok, %Warehouse.Warehouse_id_name{} = warehouse} <- Warehouse.create_warehouse_id_name(warehouse_id_name_params) do
       warehouse_id_name_mod = %{"warehouse_id": %{warehouse_name => warehouse_id},  warehouse_name: warehouse_name, id: warehouse.id, primary_key: warehouse_id, "new": false, toggle: false}
@@ -68,11 +79,15 @@ defmodule TrialWeb.PageLive do
       warehouse_id_name = Enum.map(socket.assigns.warehouse_id_name, fn warehouse -> if warehouse.id == "new", do: warehouse_id_name_mod |> Enum.into(warehouse), else: warehouse end)
       visibility = Enum.reject(socket.assigns.visibility, & &1 == id)
       toggle_ids = Enum.map(socket.assigns.toggle_ids, fn id -> if id == "new", do: warehouse.id, else: id end)
-      {:noreply, assign(socket, %{visibility:  visibility, warehouse_id_name: warehouse_id_name, toggle_ids: toggle_ids})}
+      {:noreply, socket
+      |> put_flash(:info, "Successfully Created")
+      |> assign(%{visibility:  visibility, warehouse_id_name: warehouse_id_name, toggle_ids: toggle_ids})}
     end
   end
 
   def handle_event("update", %{"warehouse_name" => warehouse_name, "id" => id}, socket) do
+    #updates existing entry in the database
+
     id = String.to_integer(id)
     warehouse_id_name = Warehouse.get_warehouse_id_name!(id)
 
@@ -80,29 +95,15 @@ defmodule TrialWeb.PageLive do
       visibility = Enum.reject(socket.assigns.visibility, & &1 == id)
       warehouse_id_names = Enum.map(socket.assigns.warehouse_id_name, fn warehouse -> if warehouse.id == id, do: %{"warehouse_name": warehouse_name} |> Enum.into(warehouse), else: warehouse end)
       Logger.info(IO.inspect(warehouse_id_names))
-      {:noreply, assign(socket, %{visibility:  visibility, warehouse_id_name: warehouse_id_names})}
+      {:noreply, socket
+      |> put_flash(:info, "Successfully Updated")
+      |> assign(%{visibility:  visibility, warehouse_id_name: warehouse_id_names})}
     end
   end
 
-# def handle_event("addRow", params, socket) do
-
-#   to_delete = socket.assigns.toggle_ids
-#   try do
-#     for id <- to_delete do
-#       warehouse_id_name = Warehouse.get_warehouse_id_name!(id)
-#       Warehouse.delete_warehouse_id_name(warehouse_id_name)
-#     end
-#     warehouse_id_name = filter_warehouses(socket.assigns.warehouse_id_name, to_delete)
-#     Logger.debug(IO.inspect(warehouse_id_name))
-#     {:noreply, assign(socket, warehouse_id_name: warehouse_id_name, toggle_ids: [])}
-#   catch
-#     exit, __ ->
-#     {:noreply, put_flash(socket, :error, "Id not found")}
-
-#   end
-# end
-
   def handle_event("select_change", %{"value" => value}, socket) do
+    # used for copying the value from the select field to the input field
+
     warehouse_id_names = socket.assigns.warehouse_id_name
     warehouse_id_name = Enum.filter(warehouse_id_names, fn warehouse -> warehouse.id == "new" end)
     key = Enum.filter(hd(warehouse_id_name).warehouse_id, fn warehouse_id -> warehouse_id[:value] == String.to_integer(value) end)
@@ -111,6 +112,7 @@ defmodule TrialWeb.PageLive do
   end
 
   def handle_event("deleteRow", __params, socket) do
+    # used for delting row from table as well as database
 
     to_delete = socket.assigns.toggle_ids
     Logger.debug(IO.inspect(to_delete))
@@ -123,7 +125,9 @@ defmodule TrialWeb.PageLive do
       end
       warehouse_id_name = filter_warehouses(socket.assigns.warehouse_id_name, to_delete)
       Logger.debug(IO.inspect(warehouse_id_name))
-      {:noreply, assign(socket, warehouse_id_name: warehouse_id_name, toggle_ids: [])}
+      {:noreply, socket
+      |> put_flash(:info, "Successfully Deleted")
+      |> assign(warehouse_id_name: warehouse_id_name, toggle_ids: [])}
     catch
       exit, __ ->
       {:noreply, put_flash(socket, :error, "Id not found")}
@@ -132,6 +136,8 @@ defmodule TrialWeb.PageLive do
   end
 
   def handle_event("addRow",  %{"value" => value}, socket) do
+    # used for creating a new row[Frontend Only]
+
     warehouse_id_name = socket.assigns.warehouse_id_name
     Logger.debug(IO.inspect(warehouse_id_name))
     if (warehouse_id_name != [] and List.last(warehouse_id_name).new) do

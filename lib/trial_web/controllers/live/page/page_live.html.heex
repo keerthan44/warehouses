@@ -29,7 +29,7 @@
       <div class="border col-span-8 flex items-center justify-center">
         <%= if elem(visibility, 0) do %>
           <%= text_input(f, :name, disabled: elem(visibility,1) , name: "warehouse_name", class: "bg-white border-none text-gray-900 text-sm  focus:ring-0 block w-full disabled:text-gray-500", placeholder: "Warehouse Name", value: warehouse.warehouse_name, id: "#{warehouse.id} input", required: true, "phx-update": "ignore") %>
-        <%= else %>
+        <% else %>
           <%= text_input(f, :name, disabled: elem(visibility,1) , name: "warehouse_name", class: "bg-white border-none text-gray-900 text-sm  focus:ring-0 block w-full disabled:text-gray-500", placeholder: "Warehouse Name", value: warehouse.warehouse_name, id: "#{warehouse.id} input", required: true, "phx-update": "update") %>
         <% end %>
       </div>
