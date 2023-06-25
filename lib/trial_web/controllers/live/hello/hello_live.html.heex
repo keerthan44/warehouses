@@ -32,9 +32,8 @@
                         <%= form_for :warehouse, "#form_new", [phx_submit: "create", id: "form_new"], fn f -> %>
                             <div class="max-w-sm mx-auto p-1 pr-0 flex items-center">
                                 <%= text_input(f, :name, name: "warehouse_id", class: "flex-1 appearance-none rounded shadow p-3 text-grey-dark mr-2 focus:outline-none", placeholder: "Warehouse ID", id: "input new", required: true) %>
-
                                 <button type="submit" class="bg-blue-600 text-white text-base font-semibold rounded-md shadow-md hover:bg-indigo-600 p-3">Add Id</button>
-                            </div>
+                                </div>
                         <%= end %>
                     </div>
                 </div>

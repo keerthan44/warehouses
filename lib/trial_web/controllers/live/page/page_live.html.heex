@@ -2,67 +2,52 @@
   <header class="px-5 py-4 border-b border-gray-100">
     <h2 class="font-semibold text-gray-800">Destination Table</h2>
   </header>
-  <table id="destination_table" class="w-full text-sm text-left text-gray-500 border-separate border-spacing-0">
-    <thead class="text-xs text-gray-700 uppercase bg-gray-100 border">
-      <tr>
-        <th scope="col" class="p-4 w-4">
-          <div class="flex items-center" >
-            <input phx-click="checkAll" phx-update="ignore" id="destination_tcheckbox_all" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-0 ">
-          </div>
-        </th>
-        <th scope="col" class="flex-[8_8_0%] justify-center px-6 border w-60">
-          Warehouse ID
-        </th>
-        <th scope="col" class="flex-[8_8_0%] justify-center px-6 border w-60">
-          Warehouse Name
-        </th>
-        <th scope="col" class="flex-1 border w-20">
-          <svg  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" height="1.5rem" stroke="black" class="block mx-auto">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-        </th>
-      </tr>
-    </thead>
-    <tbody id="destination_tbody">
-      <%= for warehouse <- @warehouse_id_name do %>
-          <%= form_for :warehouse, "#form_#{warehouse.id}", [phx_submit: "update", phx_value_id: "#{warehouse.id}", id: "form_#{warehouse.id}"], fn f -> %>
-          <% visibility = if warehouse.id in @visibility, do: {true, false}, else: {false, true} %>
-          <tr id={"#{warehouse.id} row"} class="bg-white border"  phx-update="replace">
-            <td class="w-4 p-4 border">
-              <div class="flex items-center">
-                <% checked = if warehouse.id in @toggle_ids, do: [checked: "checked"], else: [] %>
-                <input name={"checkbox"} type="checkbox" phx-click="table_data_checkboxes" phx-value-toggle-id={warehouse.id} {checked} class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-0" />
-              </div>
-            </td>
-            <th scope='row' class="focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm border">
-              <div class="flex flex-row items-center">
-                <div class="flex-[8_8_0%]">
-                  <%= select(f, :warehouse_id, warehouse.warehouse_id , disabled: !warehouse.new, class: "appearance-none disabled:text-gray-900 w-full font-normal leading-loose border-none text-gray-900 text-sm focus:ring-0 focus:outline-none block overflow-hidden bg-none", "phx-click": "select_change", id: "#{warehouse.id} select", "phx-update": "ignore", required: true) %>
-                </div>
-              </div>
-            </th>
-            <td class =" border focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm">
-              <%= text_input(f, :name, disabled: elem(visibility,1) , name: "warehouse_name", class: "bg-white border-none text-gray-900 text-sm  focus:ring-0 block w-full disabled:text-gray-500", placeholder: "Warehouse Name", value: warehouse.warehouse_name, id: "#{warehouse.id} input", required: true) %>
-            </td>
-            <td class="border focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm">
-              <div hidden={elem(visibility,0)}>
-                <svg phx-click="pencilClick" phx-value-id={"#{warehouse.id}"} xmlns="http://www.w3.org/2000/svg" class="block mx-auto hover:drop-shadow-lg hover:border-white hover:border-b-2" height="1.5em" viewBox="0 0 24 24"><path d="M18.308 0l-16.87 16.873-1.436 7.127 7.125-1.437 16.872-16.875-5.691-5.688zm-15.751 21.444l.723-3.585 12.239-12.241 2.861 2.862-12.239 12.241-3.584.723zm17.237-14.378l-2.861-2.862 1.377-1.377 2.861 2.861-1.377 1.378z"/></svg>
-              </div>
-              <div hidden={elem(visibility,1)}>
-                <div class="flex flex-row">
-                  <label class="block mr-1.5 ml-auto">
-                    <button type="submit" id={"#{warehouse.id} submit"} ><svg  xmlns="http://www.w3.org/2000/svg" class=" hover:drop-shadow-lg hover:border-white hover:border-b-2" stroke-width="2" fill="green" height="1.4em" viewBox="0 0 512 512"><path d="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg></button>
-                  </label>
-                  <svg  phx-click="reset" id={"#{warehouse.primary_key}"} phx-value-id={"#{warehouse.id}"} xmlns="http://www.w3.org/2000/svg" class="block ml-1.5 mr-auto hover:drop-shadow-lg hover:border-white hover:border-b-2" fill="red" height="1.4em" viewBox="0 0 384 512"> <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
-                </div>
-              </div>
-            </td>
-          </tr>
+  <div class="grid grid-cols-21 w-full text-sm text-left text-gray-500 border-separate border-spacing-0">
+  <div class="bg-gray-100 border-gray-300 col-span-2 flex items-center border">
+    <input phx-click="checkAll" phx-update="ignore" id="destination_tcheckbox_all" type="checkbox" class="m-auto w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-0">
+  </div>
+  <div class="border col-span-8 p-4 bg-gray-100 border-gray-300 text-xs text-gray-700 uppercase font-bold ">Warehouse ID</div>
+  <div class="border col-span-8 p-4 justify-center bg-gray-100 border-gray-300 text-xs text-gray-700 uppercase font-bold">Warehouse Name</div>
+  <div class="border col-span-3 bg-gray-100 border-gray-300 flex items-center justify-center">
+    <svg  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" height="1.5rem" stroke="black" class="block mx-auto">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  </div>
+</div>
+<%= for warehouse <- @warehouse_id_name do %>
+  <% visibility = if warehouse.id in @visibility, do: {true, false}, else: {false, true} %>
+  <%= form_for :warehouse, "#form_#{warehouse.id}", [phx_submit: "update", phx_value_id: "#{warehouse.id}", id: "form_#{warehouse.id}"], fn f -> %>
+    <div class="grid grid-cols-21 w-full text-sm text-left text-gray-500 border-separate border-spacing-0">
+      <div class="border col-span-2 flex items-center justify-center">
+          <% checked = if warehouse.id in @toggle_ids, do: [checked: "checked"], else: [] %>
+          <input name={"checkbox"} type="checkbox" phx-click="table_data_checkboxes" phx-value-toggle-id={warehouse.id} {checked} class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-0" />
+      </div>
+      <div class="border col-span-8 flex items-center justify-center">
+        <%= select(f, :id, warehouse.warehouse_id , name: "warehouse_id", disabled: !warehouse.new, class: "appearance-none disabled:text-gray-900 w-full font-normal leading-loose border-none text-gray-900 text-sm focus:ring-0 focus:outline-none block overflow-hidden bg-none", "phx-click": "select_change", id: "#{warehouse.id} select", "phx-update": "ignore", required: true) %>
+      </div>
+      <div class="border col-span-8 flex items-center justify-center">
+        <%= if elem(visibility, 0) do %>
+          <%= text_input(f, :name, disabled: elem(visibility,1) , name: "warehouse_name", class: "bg-white border-none text-gray-900 text-sm  focus:ring-0 block w-full disabled:text-gray-500", placeholder: "Warehouse Name", value: warehouse.warehouse_name, id: "#{warehouse.id} input", required: true, "phx-update": "ignore") %>
+        <%= else %>
+          <%= text_input(f, :name, disabled: elem(visibility,1) , name: "warehouse_name", class: "bg-white border-none text-gray-900 text-sm  focus:ring-0 block w-full disabled:text-gray-500", placeholder: "Warehouse Name", value: warehouse.warehouse_name, id: "#{warehouse.id} input", required: true, "phx-update": "update") %>
         <% end %>
-      <% end %>
-    </tbody>
-  </table>
+      </div>
+      <div class="border col-span-3 flex items-center justify-center">
+        <div hidden={elem(visibility,0)}>
+          <svg phx-click="pencilClick" phx-value-id={"#{warehouse.id}"} xmlns="http://www.w3.org/2000/svg" class="block mx-auto hover:drop-shadow-lg hover:border-white hover:border-b-2" height="1.5em" viewBox="0 0 24 24"><path d="M18.308 0l-16.87 16.873-1.436 7.127 7.125-1.437 16.872-16.875-5.691-5.688zm-15.751 21.444l.723-3.585 12.239-12.241 2.861 2.862-12.239 12.241-3.584.723zm17.237-14.378l-2.861-2.862 1.377-1.377 2.861 2.861-1.377 1.378z"/></svg>
+        </div>
+        <div hidden={elem(visibility,1)}>
+          <div class="flex flex-row">
+            <button type="submit" id={"#{warehouse.id} submit"} ><svg  xmlns="http://www.w3.org/2000/svg" class="block mr-1.5 ml-auto hover:drop-shadow-lg hover:border-white hover:border-b-2" stroke-width="2" fill="green" height="1.4em" viewBox="0 0 512 512"><path d="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg></button>
+            <svg  phx-click="reset" id={"#{warehouse.primary_key}"} phx-value-id={"#{warehouse.id}"} xmlns="http://www.w3.org/2000/svg" class="block ml-1.5 mr-auto hover:drop-shadow-lg hover:border-white hover:border-b-2" fill="red" height="1.4em" viewBox="0 0 384 512"> <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+<% end %>
+
 </div>
 <div class="pt-4">
   <button phx-click="addRow" type="button" class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-green-600 focus:z-10 focus:ring-4 focus:ring-gray-200 ">Add Row</button>

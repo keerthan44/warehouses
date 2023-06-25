@@ -26,6 +26,8 @@ defmodule TrialWeb.Router do
 
     live "/", PageLive
     live "/add_ids", HelloLive
+    live "/trial", ExampleLive
+
   end
 
   scope "/api", TrialWeb do

@@ -23,6 +23,11 @@ module.exports = {
     extend: {
       colors: {
         brand: "#FD4F00",
+      },
+      gridTemplateColumns: {
+        // Simple 16 column grid
+        '21': 'repeat(21, minmax(0, 1fr))',
+
       }
     },
   },

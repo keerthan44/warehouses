@@ -6,6 +6,7 @@ defmodule TrialWeb.PageLive do
   alias Trial.Warehouse
   require IO
   require Logger
+
   def mount(_params, _session, socket) do
     warehouse_id_name = Warehouse.list_warehouse_id_name_joined()
     warehouse_id_name = Enum.map(warehouse_id_name, fn warehouse ->  %{"warehouse_id": %{warehouse.warehouse_id => warehouse.primary_key},"new": false, toggle: false} |> Enum.into(warehouse) end)
@@ -56,6 +57,17 @@ defmodule TrialWeb.PageLive do
 
   end
 
+  def handle_event("update", %{"warehouse_name" => warehouse_name, "id" => id, "warehouse_id" => warehouse_id}, socket) do
+    warehouse_id_name_params = %{ "warehouse_id_name" => warehouse_name, "warehouse_id" => warehouse_id}
+    with {:ok, %Warehouse.Warehouse_id_name{} = warehouse} <- Warehouse.create_warehouse_id_name(warehouse_id_name_params) do
+      warehouse_id_name_mod = %{"warehouse_id": %{warehouse_name => warehouse_id},  warehouse_name: warehouse_name, id: warehouse.id, primary_key: warehouse_id, "new": false, toggle: false}
+      Logger.info(IO.inspect(warehouse_id_name_mod))
+      warehouse_id_name = Enum.map(socket.assigns.warehouse_id_name, fn warehouse -> if warehouse.id == "new", do: warehouse_id_name_mod |> Enum.into(warehouse), else: warehouse end)
+      visibility = Enum.reject(socket.assigns.visibility, & &1 == id)
+      {:noreply, assign(socket, %{visibility:  visibility, warehouse_id_name: warehouse_id_name})}
+    end
+  end
+
   def handle_event("update", %{"warehouse_name" => warehouse_name, "id" => id}, socket) do
     id = String.to_integer(id)
     warehouse_id_name = Warehouse.get_warehouse_id_name!(id)
@@ -68,17 +80,6 @@ defmodule TrialWeb.PageLive do
     end
   end
 
-  def handle_event("update", %{"warehouse_name" => warehouse_name, "id" => id, "warehouse_id" => warehouse_id}, socket) do
-    id = String.to_integer(id)
-    warehouse_id_name = Warehouse.get_warehouse_id_name!(id)
-
-    with {:ok, %Warehouse.Warehouse_id_name{} = warehouse_id_name} <- Warehouse.update_warehouse_id_name(warehouse_id_name, %{"warehouse_id_name": warehouse_name, "warehouse_id": warehouse_id_name.warehouse_id}) do
-      visibility = Enum.reject(socket.assigns.visibility, & &1 == id)
-      warehouse_id_names = Enum.map(socket.assigns.warehouse_id_name, fn warehouse -> if warehouse.id == id, do: %{"warehouse_name": warehouse_name} |> Enum.into(warehouse), else: warehouse end)
-      Logger.info(IO.inspect(warehouse_id_names))
-      {:noreply, assign(socket, %{visibility:  visibility, warehouse_id_name: warehouse_id_names})}
-    end
-  end
 # def handle_event("addRow", params, socket) do
 
 #   to_delete = socket.assigns.toggle_ids
@@ -127,19 +128,6 @@ defmodule TrialWeb.PageLive do
   end
 
   def handle_event("addRow",  %{"value" => value}, socket) do
-    warehouse_id_name = socket.assigns.warehouse_id_name
-    Logger.debug(IO.inspect(warehouse_id_name))
-    if (warehouse_id_name != [] and List.last(warehouse_id_name).new) do
-      {:noreply, put_flash(socket, :info, "New Row Already Exists. Fill that first to proceed")}
-    else
-      warehouse_ids_not_used = [ [key: "Warehouse ID", value: "new", hidden: true, selected: true] | Warehouse.list_warehouse_id_not_used() |> Enum.map(fn warehouse -> [key: warehouse.name_id, value: warehouse.id] end)]
-      warehouse_id_name = warehouse_id_name ++ [%{warehouse_id: warehouse_ids_not_used, warehouse_name: "", id: "new", primary_key: "new", toggle: false, new: true}]
-      visibility = [ "new" | socket.assigns.visibility]
-      {:noreply, assign(socket, warehouse_id_name: warehouse_id_name, visibility: visibility)}
-    end
-  end
-
-  def handle_event("validate",  %{"value" => value}, socket) do
     warehouse_id_name = socket.assigns.warehouse_id_name
     Logger.debug(IO.inspect(warehouse_id_name))
     if (warehouse_id_name != [] and List.last(warehouse_id_name).new) do
