@@ -8,6 +8,8 @@ defmodule TrialWeb.PageLive do
   require Logger
 
   def mount(_params, _session, socket) do
+
+    # On intial render, it gets all the available warehouse id names with the warehouse_ids joined
     warehouse_id_name = Warehouse.list_warehouse_id_name_joined()
     warehouse_id_name = Enum.map(warehouse_id_name, fn warehouse ->  %{"warehouse_id": %{warehouse.warehouse_id => warehouse.primary_key},"new": false, toggle: false} |> Enum.into(warehouse) end)
     Logger.info(IO.inspect(warehouse_id_name))
@@ -16,6 +18,7 @@ defmodule TrialWeb.PageLive do
   end
 
   def handle_event("checkAll", %{"value" => "on"}, socket) do
+    #
     toggle_ids = socket.assigns.warehouse_id_name |> Enum.map(& &1.id)
     {:noreply, assign(socket, :toggle_ids, toggle_ids)}
   end
@@ -64,7 +67,8 @@ defmodule TrialWeb.PageLive do
       Logger.info(IO.inspect(warehouse_id_name_mod))
       warehouse_id_name = Enum.map(socket.assigns.warehouse_id_name, fn warehouse -> if warehouse.id == "new", do: warehouse_id_name_mod |> Enum.into(warehouse), else: warehouse end)
       visibility = Enum.reject(socket.assigns.visibility, & &1 == id)
-      {:noreply, assign(socket, %{visibility:  visibility, warehouse_id_name: warehouse_id_name})}
+      toggle_ids = Enum.map(socket.assigns.toggle_ids, fn id -> if id == "new", do: warehouse.id, else: id end)
+      {:noreply, assign(socket, %{visibility:  visibility, warehouse_id_name: warehouse_id_name, toggle_ids: toggle_ids})}
     end
   end
 
