@@ -21,6 +21,13 @@ defmodule TrialWeb.Router do
     get "/add_ids", HelloController, :index
   end
 
+  scope "/live", TrialWeb do
+    pipe_through :browser
+
+    live "/", PageLive
+    live "/add_ids", HelloLive
+  end
+
   scope "/api", TrialWeb do
     pipe_through :api
 

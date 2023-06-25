@@ -35,20 +35,20 @@
                         <input name="destination_tcheckboxes" id="checkbox" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-0">
                     </div>
                     <div hidden>
-                    <%= elem(warehouse, 2) %>
+                    <%= warehouse.id %>
                     </div>
                 </td>
                 <th scope='row' class="focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm border">
                     <div class="flex flex-row items-center">
                         <div class="flex-[8_8_0%]">
                             <select id={#{elem(warehouse, 3)}} onchange="return selectChange(this);" disabled="true" class="appearance-none disabled:text-gray-900 w-full font-normal leading-loose border-none text-gray-900 text-sm focus:ring-0 focus:outline-none block overflow-hidden bg-none">
-                                <option selected hidden ><%= elem(warehouse, 0) %></option>
+                                <option selected hidden ><%= warehouse.warehouse_id %></option>
                             </select>
                         </div>
                     </div>
                 </th>
                 <td class=" border focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm">
-                    <input disabled  type="text" id="name" class="bg-white border-none text-gray-900 text-sm  focus:ring-0 block w-full disabled:text-gray-500" placeholder="Warehouse Name" value={elem(warehouse, 1)}>
+                    <input disabled  type="text" id="name" class="bg-white border-none text-gray-900 text-sm  focus:ring-0 block w-full disabled:text-gray-500" placeholder="Warehouse Name" value={warehouse.warehouse_name}>
                 </td>
                 <td class="border focus-within:border-2 focus-within:border-gray-300 focus-within:shadow-sm">
                     <div onClick="pencilClick(this)">
@@ -60,7 +60,7 @@
                             <svg onClick="redCross(this)" xmlns="http://www.w3.org/2000/svg" class="block ml-1.5 mr-auto hover:drop-shadow-lg hover:border-white hover:border-b-2" fill="red" height="1.4em" viewBox="0 0 384 512"> <path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z"/></svg>
                         </div>
                         <div hidden>
-                            <%= elem(warehouse, 3) %>
+                            <%= warehouse.primary_key %>
                         </div>
                     </div>
                 </td>
@@ -117,7 +117,7 @@
             data = data.data;
             let options = ''
             for (let i = 0; i < data.length; i++) {
-                options += '<option id="' + data[i][0] + '">' + data[i][1] + '</option>\n'
+                options += '<option id="' + data[i].id+ '">' + data[i].name_id + '</option>\n'
             }
             let destination_tbody = document.getElementById("destination_tbody")
             table_row = document.createElement("tr");

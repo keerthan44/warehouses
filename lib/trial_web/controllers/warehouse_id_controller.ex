@@ -46,7 +46,6 @@ defmodule TrialWeb.Warehouse_idController do
 
   def show_not_used(conn, __params) do
     warehouse_ids_not_used = Warehouse.list_warehouse_id_not_used()
-    warehouse_ids_not_used_mod = Enum.map(warehouse_ids_not_used, &Tuple.to_list/1)
-    json(conn, %{"data": warehouse_ids_not_used_mod})
+    json(conn, %{"data": warehouse_ids_not_used})
   end
 end

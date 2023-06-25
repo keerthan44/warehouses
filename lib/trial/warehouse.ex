@@ -201,7 +201,7 @@ defmodule Trial.Warehouse do
   def list_warehouse_id_name_joined do
     from(warehouse in Warehouse_id_name)
     |> join(:left, [warehouse], warehouse_id in Warehouse_id, on: warehouse.warehouse_id == warehouse_id.id)
-    |> select([warehouse, warehouse_id], {warehouse_id.warehouse_id, warehouse.warehouse_id_name, warehouse.id, warehouse_id.id})
+    |> select([warehouse, warehouse_id], %{warehouse_id: warehouse_id.warehouse_id, warehouse_name: warehouse.warehouse_id_name, id: warehouse.id, primary_key: warehouse_id.id})
     |> Repo.all()
   end
 
@@ -210,8 +210,7 @@ defmodule Trial.Warehouse do
       left_join: warehouse_id_name in Warehouse_id_name,
       on: warehouse_id.id == warehouse_id_name.warehouse_id,
       where: is_nil(warehouse_id_name.warehouse_id),
-      select: {warehouse_id.id, warehouse_id.warehouse_id}
-
+      select: %{id: warehouse_id.id, name_id: warehouse_id.warehouse_id}
     Repo.all(query)
   end
 end
