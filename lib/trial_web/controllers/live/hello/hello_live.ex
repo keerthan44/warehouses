@@ -12,6 +12,8 @@ defmodule TrialWeb.HelloLive do
   end
 
   def handle_event("create", %{"warehouse_id" => warehouse_id_params, "_csrf_token" => token}, socket) do
+    #used for creating new warehouse Ids
+
     warehouse_id_params = %{"warehouse_id" => warehouse_id_params}
     with {:ok, %Warehouse.Warehouse_id{} = warehouse_id} <- Warehouse.create_warehouse_id(warehouse_id_params) do
       warehouse_id_new = Enum.concat(socket.assigns.warehouse_id, [warehouse_id])
