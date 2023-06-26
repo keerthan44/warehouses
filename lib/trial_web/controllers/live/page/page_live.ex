@@ -73,8 +73,9 @@ defmodule TrialWeb.PageLive do
     # Creates a new warehouse name and applies the necessary changes to the state variables
 
     warehouse_id_name_params = %{ "warehouse_id_name" => warehouse_name, "warehouse_id" => warehouse_id}
+    warehouse_id_data = Warehouse.get_warehouse_id!(String.to_integer(warehouse_id))
     with {:ok, %Warehouse.Warehouse_id_name{} = warehouse} <- Warehouse.create_warehouse_id_name(warehouse_id_name_params) do
-      warehouse_id_name_mod = %{"warehouse_id": %{warehouse_name => warehouse_id},  warehouse_name: warehouse_name, id: warehouse.id, primary_key: warehouse_id, "new": false, toggle: false}
+      warehouse_id_name_mod = %{"warehouse_id": %{warehouse_id_data.warehouse_id => warehouse_id},  warehouse_name: warehouse_name, id: warehouse.id, primary_key: warehouse_id, "new": false, toggle: false}
       Logger.info(IO.inspect(warehouse_id_name_mod))
       warehouse_id_name = Enum.map(socket.assigns.warehouse_id_name, fn warehouse -> if warehouse.id == "new", do: warehouse_id_name_mod |> Enum.into(warehouse), else: warehouse end)
       visibility = Enum.reject(socket.assigns.visibility, & &1 == id)
