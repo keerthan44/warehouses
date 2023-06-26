@@ -106,7 +106,7 @@ defmodule TrialWeb.PageLive do
 
     warehouse_id_names = socket.assigns.warehouse_id_name
     warehouse_id_name = Enum.filter(warehouse_id_names, fn warehouse -> warehouse.id == "new" end)
-    key = Enum.filter(hd(warehouse_id_name).warehouse_id, fn warehouse_id -> warehouse_id[:value] == String.to_integer(value) end)
+    key = Enum.filter(hd(warehouse_id_name).warehouse_id, fn warehouse_id -> warehouse_id[:value] == if value != "new", do: String.to_integer(value), else: "new" end)
     warehouse_id_names_mod = Enum.map(warehouse_id_names, fn warehouse -> if warehouse.id == "new", do:  %{"warehouse_name": hd(key)[:key]} |> Enum.into(warehouse), else: warehouse end)
     {:noreply, assign(socket, warehouse_id_name: warehouse_id_names_mod)}
   end
